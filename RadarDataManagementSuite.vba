@@ -1,24 +1,25 @@
 Sub ErrorCheck()
-   
-    ' Declare constants
+    ' Constants
     Dim RADAR_SITES As Variant
     RADAR_SITES = Array("Site1", "Site2", "Site3", "Site4")
     Dim EXPECTED_VALUES As Variant
-    EXPECTED_VALUES = Array("Query", "Id", "Trk", "Time", "MsgType", "Rng(nmi)", "Az(deg)", "Hgt(ft)", "MC(ft)", "MCV", "M3", "M3V", "M2", "M2V", "Lat", "Lon", "DecLat", "DecLon", "7600", "7700", "Af", "Date", "Disc", "Ident", "M2X", "M3X", "M4", "NonAf", "RL", "Tst", "TIS(sec)")
+    EXPECTED_VALUES = Array("Query", "Id", "Trk", "Time", "MsgType", "Rng(nmi)", "Az(deg)", "Hgt(ft)", "MC(ft)", "MCV", "M3", "M3V", "M2", "M2V", "Lat", "Lon", "DecLat", "DecLon", "", "", "Af", "Date", "Disc", "Ident", "M2X", "M3X", "M4", "NonAf", "RL", "Tst", "TIS(sec)")
 
-    ' Other variable declarations
+    ' Variables
     Dim col As Integer
     Dim row As Integer
     Dim messageType As String
     Dim siteNameAJ As String
     Dim Error1Int As Integer
-    Error1Int = 0
     Dim Error1CumInt As Integer
-    Error1CumInt = 0
     Dim Error2Int As Integer
-    Error2Int = 0
     Dim MissingColumnsSTR As String
 
+    ' Set error to 0
+    Error1Int = 0
+    Error1CumInt = 0
+    Error2Int = 0
+    
     ' Fill radar sites from RADAR_SITES to the AI column
     For row = 0 To UBound(RADAR_SITES)
         Cells(row + 3, "AI").Value = RADAR_SITES(row)
@@ -136,7 +137,7 @@ Sub ErrorCheck()
 End Sub
 
 Sub CreateNewWorkbook()
-    ' Declare variables and constants
+    ' Variables and Constants
     Dim FirstSheetName As String
     Dim activeWorkbookName As String
     Dim activeWorkbookPath As String
@@ -145,26 +146,27 @@ Sub CreateNewWorkbook()
     Dim newWorkbookName As String
     Const fileExtensionLength As Integer = 4
 
-    ' Declare an array of sheet names
+    ' Array of sheet names
     Dim sheetNames As Variant
     sheetNames = Array("Site1", "Site2", "Site3", "Site4", "Results")
 
-    ' Define an array of cell values
+    ' Array of cell values
     Dim cellLocations As Variant
     cellLocations = Array(Array("C1", "SiteName"), Array("H1", "SiteName"), Array("M1", "SiteName"), Array("R1", "SiteName"))
-    ' Define an array of cell ranges to merge
+    
+    ' Array of cell ranges to merge
     Dim cellLocationRanges As Variant
     cellLocationRanges = Array("A1:E1", "F1:J1", "K1:O1", "P1:T1")
    
-    ' Define an array of cell values
+    ' Array of cell values
     Dim cellValues As Variant
     cellValues = Array("Start Date", "Start Time", "End Date", "End Time", "Outage Duration")
    
-    ' Define an array of cell ranges
+    ' Array of cell ranges
     Dim cellRanges As Variant
     cellRanges = Array("A2:E2", "F2:J2", "K2:O2", "P2:T2")
 
-    ' Define an array of column letters and their corresponding number formats
+    ' Array of column letters and their corresponding number formats
     Dim colFormats As Variant
     colFormats = Array(Array("A", "mm/dd/yyyy"), Array("B", "hh:mm:ss.0"), Array("C", "mm/dd/yyyy"), _
                        Array("D", "hh:mm:ss.0"), Array("E", "hh:mm:ss.0"), Array("F", "mm/dd/yyyy"), _
@@ -284,7 +286,7 @@ Sub CreateNewWorkbook()
 End Sub
 
 Sub CopyData2NewWorkbook()
-    ' Declare variables
+    ' Variables
     Dim FirstSheetNameSTR As String
     FirstSheetNameSTR = ActiveSheet.Name
     Dim siteNames As Variant
@@ -305,9 +307,9 @@ Sub CopyData2NewWorkbook()
         ' If the current siteName is "Site1", filter column F for "BRTQC"
         If siteName = "Site1" Then ' Change as necessary
             Sheets(FirstSheetNameSTR).Range("$A$1:$AE$113510").AutoFilter Field:=6, Criteria1:="BRTQC"
-     Else ' Otherwise, filter column F for "SRTQC"
+        Else ' Otherwise, filter column F for "SRTQC"
             Sheets(FirstSheetNameSTR).Range("$A$1:$AE$113510").AutoFilter Field:=6, Criteria1:="SRTQC"
-       End If
+        End If
        
         ' Check if data has already been copied to the sheet with the same name as the current siteName
         If Sheets(siteName).Range("A2").Value = "" Then
@@ -323,7 +325,6 @@ Sub CopyData2NewWorkbook()
        
             ' Add text "End" to a cell in column E in the sheet with the same name as the current siteName
             Sheets(siteName).Range("B2").End(xlDown).Offset(1, 1).Value = "End"
-            'Sheets(siteName).Range("E2").End(xlDown).Offset(1, 1).Value = "End"
         Else ' If data has already been copied to the sheet with the same name as the current siteName, set Error1Int to 1
             Error1Int = 1
             Sheets(siteName).Range("B2").End(xlDown).Offset(1, 1).Value = "End"
@@ -343,10 +344,10 @@ Sub CopyData2NewWorkbook()
 End Sub
 
 Sub OutageCheck()
-    'Turn off screen updating to speed up the code
+    ' Turn off screen updating to speed up the code
     Application.ScreenUpdating = False
    
-    'Declare variables
+    ' Variables
     Dim FirstSheetNameSTR As String
     Dim N As Integer
     Dim TestSTR As String
@@ -357,14 +358,13 @@ Sub OutageCheck()
     Dim StartDateSGL As Single
     Dim EndDateSGL As Single
     Dim cellRef As String
-   
-    'Add variables to store the current row and column
+    ' Variables to store the current row and column
     Dim currentRow As Long
     Dim currentColumn As Long
    
-     'Loop through the values of N from 1 to 4
-    For N = 1 To 4
-        'Use a Select Case statement to assign values to FirstSheetNameSTR and cellRef based on the value of N
+    ' Loop through the values of N from 1 to 4
+    For N = 1 To 4 ' Adjust as needed
+        ' Use a Select Case statement to assign values to FirstSheetNameSTR and cellRef based on the value of N
         Select Case N
             Case 1
                 FirstSheetNameSTR = "Site1"
@@ -381,60 +381,56 @@ Sub OutageCheck()
         End Select
        
         'Initialize currentRow and currentColumn with the starting row and column (D2)
-        currentRow = 2 'Replace 2 with the starting row (D2)
-        currentColumn = 4 'Replace 4 with the starting column (D2)
+        currentRow = 2 'Replace 2 with the starting row as needed
+        currentColumn = 4 'Replace 4 with the starting column as needed
        
-        'Begin loop
+        ' Begin loop
         Do While strData <> "End"
        
-        'Use direct references to cells instead of .Select statements.
-        TestSTR = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn - 1).Value
-        If TestSTR = "End" Then
-            GoTo MyQuit
-        End If
-       
-        'Use direct references to cells instead of .Select statements.
-        Time1SGL = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn).Value 'Cell D2
+            ' Direct references to cells
+            TestSTR = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn - 1).Value
+            If TestSTR = "End" Then
+                GoTo MyQuit
+            End If
+        
+            ' Direct references to cells
+            Time1SGL = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn).Value 'Cell D2
+            Time2SGL = Sheets(FirstSheetNameSTR).Cells(currentRow + 1, currentColumn).Value 'Cell D3
+            TimeDeltaSGL = Time2SGL - Time1SGL
+        
+            If TimeDeltaSGL < 0 Then
+                Time3SGL = Time2SGL + 1
+                TimeDeltaSGL = Time3SGL - Time1SGL
+            End If
 
-        Time2SGL = Sheets(FirstSheetNameSTR).Cells(currentRow + 1, currentColumn).Value 'Cell D3
-
-        TimeDeltaSGL = Time2SGL - Time1SGL
-       
-        If TimeDeltaSGL < 0 Then
-            Time3SGL = Time2SGL + 1
-            TimeDeltaSGL = Time3SGL - Time1SGL
-        End If
             ' 1.47731481481484E-04
-        If (TimeDeltaSGL >= 0.0006 And TimeDeltaSGL > 0) Then
-            'Use direct references to cells instead of .Select statements.
-            EndDateSGL = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn + 19).Value
-            StartDateSGL = Sheets(FirstSheetNameSTR).Cells(currentRow + 1, currentColumn + 19).Value
-           
-            'Use a With statement to avoid repeating the Sheets("Results") reference.
-            With Sheets("Results")
-                .Range(cellRef).Value = StartDateSGL
-                .Range(cellRef).Offset(0, 1).Value = Time1SGL
-                .Range(cellRef).Offset(0, 2).Value = EndDateSGL
-                .Range(cellRef).Offset(0, 3).Value = Time2SGL
-                .Range(cellRef).Offset(0, 4).Value = TimeDeltaSGL
-               
-                'Move down one row in the "Results" sheet for next iteration of loop.
-                cellRef = .Range(cellRef).Offset(1, 0).Address(False, False)
-            End With
-        End If
-        'Use a direct reference to a cell instead of a .Select statement.
-        Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn + 1).Value = TimeDeltaSGL
+            If (TimeDeltaSGL >= 0.0006 And TimeDeltaSGL > 0) Then
+                ' Direct references to cells
+                EndDateSGL = Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn + 19).Value
+                StartDateSGL = Sheets(FirstSheetNameSTR).Cells(currentRow + 1, currentColumn + 19).Value
+            
+                With Sheets("Results")
+                    .Range(cellRef).Value = StartDateSGL
+                    .Range(cellRef).Offset(0, 1).Value = Time1SGL
+                    .Range(cellRef).Offset(0, 2).Value = EndDateSGL
+                    .Range(cellRef).Offset(0, 3).Value = Time2SGL
+                    .Range(cellRef).Offset(0, 4).Value = TimeDeltaSGL
+                
+                    ' Move down one row in the "Results" sheet for next iteration of loop.
+                    cellRef = .Range(cellRef).Offset(1, 0).Address(False, False)
+                End With
+            End If
 
-        'Update currentRow and currentColumn as needed.
-        currentRow = currentRow + 1 'Move right one column.
-    Loop
-MyQuit:
-    MsgBox ("Finished Checking: " & FirstSheetNameSTR)
-Next N
+            ' Direct reference to a cell
+            Sheets(FirstSheetNameSTR).Cells(currentRow, currentColumn + 1).Value = TimeDeltaSGL
+            ' Update currentRow and currentColumn as needed
+            currentRow = currentRow + 1 ' Move right one column
+        Loop
+        MyQuit:
+            MsgBox ("Finished Checking: " & FirstSheetNameSTR)
+    Next N
 
-Sheets("Results").Select
-
-Application.ScreenUpdating = True
-MsgBox "Succesfully Completed Outage Check"
-
+    Sheets("Results").Select
+    Application.ScreenUpdating = True
+    MsgBox "Succesfully Completed Outage Check"
 End Sub
